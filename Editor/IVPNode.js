@@ -1,6 +1,6 @@
 class IVPNode extends VPObject {
-    constructor(dPosition, {} = {}) {
-        super({
+    constructor(vp, dPosition, {} = {}) {
+        super(vp, {
             "mouseListening": true,
             "zOrder": 10
         });
@@ -20,12 +20,14 @@ class IVPNode extends VPObject {
             if (candidateLink) {
                 if (vpp.linkCandidate && vpp.linkCandidate != candidateLink.nodeA) {
                     candidateLink.nodeB = vpp.linkCandidate;
-                    const code = candidateLink.calcPairCode();
+                    const code = candidateLink.recalcPairCode();
                     if (vpp.linkPairCodes.has(code)){
                         vpp.forget(candidateLink);
                     }else{
                         vpp.linkPairCodes.add(code);
                         vpp.links.add(candidateLink);
+                        candidateLink.nodeA.links.add(candidateLink);
+                        candidateLink.nodeB.links.add(candidateLink);
                         vpp.onLinkMade(candidateLink);
                         vpp.queueRedraw();
                     }
@@ -38,75 +40,75 @@ class IVPNode extends VPObject {
         }
     }
 
-    draw(vp, ctx) {
+    draw(ctx) {
         ctx.fillStyle = this.color;
-        this.fillCircle(vp, ctx);
+        this.fillCircle(ctx);
         if (this.mouseOverlapping) {
-            ctx.lineWidth = 2 * vp.zoomFactor;
+            ctx.lineWidth = 2 * this.vp.zoomFactor;
             ctx.strokeStyle = "#eeeeee"
-            this.strokeCircle(vp, ctx);
+            this.strokeCircle(ctx);
         }
     }
 
-    isMouseBlockingOverlap(vp) {
+    isMouseBlockingOverlap() {
         return true;
     }
 
-    isMouseBlockingPress(vp) {
+    isMouseBlockingPress() {
         return true;
     }
 
-    onDragStarted(vp) {
-        super.onDragStarted(vp);
-        vp.suggestCursor("crosshair");
+    onDragStarted() {
+        super.onDragStarted();
+        this.vp.suggestCursor("crosshair");
 
         const link = new NodeLink(this, "mouse");
-        vp.mouseLink = link;
-        vp.registerObj(link);
+        this.vp.mouseLink = link;
+        this.vp.registerObj(link);
     };
 
-    onDragEnded(vp) {
-        super.onDragEnded(vp);
-        vp.unsuggestCursor("crosshair");
+    onDragEnded() {
+        super.onDragEnded();
+        this.vp.unsuggestCursor("crosshair");
     };
 
-    onMouseUp(vp) {
-        super.onMouseUp(vp);
-        vp.linkCandidate = this;
+    onMouseUp() {
+        super.onMouseUp();
+        this.vp.linkCandidate = this;
     }
 
-    onMouseEntered(vp) {
-        super.onMouseEntered(vp);
-        vp.suggestCursor("pointer");
+    onMouseEntered() {
+        super.onMouseEntered();
+        this.vp.suggestCursor("pointer");
     }
 
-    onMouseExited(vp) {
-        super.onMouseExited(vp);
-        vp.unsuggestCursor("pointer");
+    onMouseExited() {
+        super.onMouseExited();
+        this.vp.unsuggestCursor("pointer");
     }
 
-    onClicked(vp) {
-        super.onClicked(vp);
+    onClicked() {
+        super.onClicked();
         this.nodeState = (this.nodeState + 1) % IVPNode.nodeStates.length;
         this.color = IVPNode.nodeStateColors[this.nodeState];
 
         for (const rotator of this.rotators) {
-            vp.forget(rotator);
+            this.vp.forget(rotator);
         }
         this.rotators = [];
         if (this.nodeState == 1 || this.nodeState == 2) {
             const rot = new RotArrow(this, this.nodeState == 1);
             this.rotators.push(rot);
-            vp.registerObj(rot);
+            this.vp.registerObj(rot);
         } else if (this.nodeState == 3) {
             const rotP = new RotArrow(this, false);
             const rotN = new RotArrow(this, true);
             this.rotators.push(rotP);
             this.rotators.push(rotN);
-            vp.registerObj(rotP);
-            vp.registerObj(rotN);
+            this.vp.registerObj(rotP);
+            this.vp.registerObj(rotN);
         }
-        vp.onNodeChanged(this);
+        this.vp.onNodeChanged(this);
     }
 }
 

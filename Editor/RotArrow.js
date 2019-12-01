@@ -2,7 +2,7 @@ const arrowLength = 25;
 
 class RotArrow extends VPObject {
     constructor(node, inverted, {} = {}) {
-        super({
+        super(node.vp, {
             "mouseListening": true,
             "zOrder": 8
         });
@@ -12,11 +12,11 @@ class RotArrow extends VPObject {
         this.recalcEndpoint();
     }
 
-    isMouseBlockingOverlap(vp) {
+    isMouseBlockingOverlap() {
         return true;
     }
 
-    isMouseBlockingPress(vp) {
+    isMouseBlockingPress() {
         return true;
     }
 
@@ -32,41 +32,41 @@ class RotArrow extends VPObject {
         return this.endpoint.subtractp(point).lengthSquared() < Math.pow(this.size, 2);
     }
 
-    onMouseEntered(vp) {
-        super.onMouseEntered(vp);
-        vp.suggestCursor("grab");
+    onMouseEntered() {
+        super.onMouseEntered();
+        this.vp.suggestCursor("grab");
     }
 
-    onMouseExited(vp) {
-        super.onMouseExited(vp);
-        vp.unsuggestCursor("grab");
+    onMouseExited() {
+        super.onMouseExited();
+        this.vp.unsuggestCursor("grab");
     }
 
-    onDragStarted(vp) {
-        super.onDragStarted(vp);
-        vp.suggestCursor("grabbing");
+    onDragStarted() {
+        super.onDragStarted();
+        this.vp.suggestCursor("grabbing");
     };
 
-    onDragEnded(vp) {
-        super.onDragEnded(vp);
-        vp.unsuggestCursor("grabbing");
+    onDragEnded() {
+        super.onDragEnded();
+        this.vp.unsuggestCursor("grabbing");
     };
 
-    onDragged(vp) {
-        super.onDragged(vp);
-        let angle = -(vp.mousePos.subtractp(this.node.position).getAngle() + Math.PI / 2);
+    onDragged() {
+        super.onDragged();
+        let angle = -(this.vp.mousePos.subtractp(this.node.position).getAngle() + Math.PI / 2);
         if (!this.inverted) {
             angle = Math.PI + angle;
         }
-        if(vp.ctrlDown){
-            angle = Math.round(angle / Math.PI * 8) / 8 * Math.PI;
+        if (this.vp.ctrlDown) {
+            angle = Math.round(angle / Math.PI * 24) / 24 * Math.PI;
         }
         this.node.rotation = angle;
         this.recalcEndpoint();
-        vp.onNodeChanged(this.node);
+        this.vp.onNodeChanged(this.node);
     };
 
-    draw(vp, ctx) {
+    draw(ctx) {
         const rotation = this.node.rotation;
         const tipLength = arrowLength * 0.5;
         const rotCW = rotation + Math.PI * 0.75;
@@ -81,16 +81,16 @@ class RotArrow extends VPObject {
         )
 
         ctx.lineCap = "round";
-        ctx.strokeStyle = vp.backgroundColor;
-        ctx.lineWidth = 12 * vp.zoomFactor;
-        this.strokeLine(vp, ctx, this.node.position, this.endpoint);
-        this.strokeLine(vp, ctx, this.endpoint, tipCW);
-        this.strokeLine(vp, ctx, this.endpoint, tipCCW);
+        ctx.strokeStyle = this.vp.backgroundColor;
+        ctx.lineWidth = 12 * this.vp.zoomFactor;
+        this.strokeLine(ctx, this.node.position, this.endpoint);
+        this.strokeLine(ctx, this.endpoint, tipCW);
+        this.strokeLine(ctx, this.endpoint, tipCCW);
 
         ctx.strokeStyle = this.inverted ? IVPNode.nodeStateColors[1] : IVPNode.nodeStateColors[2];
-        ctx.lineWidth = 6 * vp.zoomFactor;
+        ctx.lineWidth = 6 * this.vp.zoomFactor;
         // this.strokeLine(vp, ctx, this.node.position, this.endpoint);
-        this.strokeLine(vp, ctx, this.endpoint, tipCW);
-        this.strokeLine(vp, ctx, this.endpoint, tipCCW);
+        this.strokeLine(ctx, this.endpoint, tipCW);
+        this.strokeLine(ctx, this.endpoint, tipCCW);
     }
 }

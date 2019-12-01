@@ -26,7 +26,7 @@ class PartEditor extends Viewport {
         const radius = 4;
         for (let ix = -radius; ix <= radius; ix++) {
             for (let iy = -radius; iy <= radius; iy++) {
-                const node = new IVPNode(new NPoint(ix, iy));
+                const node = new IVPNode(this, new NPoint(ix, iy));
                 node.position = new NPoint(ix * 100, iy * 100);
                 this.nodes.add(node);
                 this.registerObj(node);
@@ -105,6 +105,10 @@ class PartEditor extends Viewport {
     }
 
     onLinkMade(link) {
+        this.partChanged();
+    }
+
+    onLinkDestroyed(link) {
         this.partChanged();
     }
 

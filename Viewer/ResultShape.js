@@ -1,6 +1,6 @@
 class ResultShape extends VPObject {
     constructor(partEditor, depth = 4, {} = {}) {
-        super({
+        super(partEditor, {
             "mouseListening": true,
             "zOrder": 8
         });
@@ -16,12 +16,12 @@ class ResultShape extends VPObject {
         return true;
     }
 
-    draw(vp, ctx) {
-        this.drawPart(vp, ctx, new NPoint(), 0, 1, 5);
-        // this.drawPart(vp, ctx, this.rootNode, new Set(), new Set(), new NPoint(), 1, 1, 5);
+    draw(ctx) {
+        this.drawPart(ctx, new NPoint(), 0, 1, 5);
+        // this.drawPart(ctx, this.rootNode, new Set(), new Set(), new NPoint(), 1, 1, 5);
     }
 
-    drawPart(vp, ctx, srcPos, srcRot, srcScale, depthCounter) {
+    drawPart(ctx, srcPos, srcRot, srcScale, depthCounter) {
         if (depthCounter <= 0) {
             return;
         }
@@ -36,12 +36,12 @@ class ResultShape extends VPObject {
                 // }
                 // ctx.strokeStyle = col;
                 ctx.strokeStyle = "#eeeeee";
-                ctx.lineWidth = 5 * vp.zoomFactor;
-                this.strokeLine(vp, ctx, posA.multiply1(100), posB.multiply1(100));
+                ctx.lineWidth = 5 * this.vp.zoomFactor;
+                this.strokeLine(ctx, posA.multiply1(100), posB.multiply1(100));
             }
             for (const branchNode of this.nodeLists[2]) {
                 const posR = branchNode.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
-                this.drawPart(vp, ctx, posR, srcRot + rootNode.rotation - branchNode.rotation, srcScale * branchNode.scale, depthCounter - 1);
+                this.drawPart(ctx, posR, srcRot + rootNode.rotation - branchNode.rotation, srcScale * branchNode.scale, depthCounter - 1);
             }
         }
     }
