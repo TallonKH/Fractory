@@ -18,6 +18,15 @@ class NodeLink extends VPObject {
         return point.distToSegmentSquared(this.nodeA.position, this.nodeB.position) < Math.pow(this.thickness / 2, 2);
     }
 
+    isMouseBlockingOverlap() {
+        return true;
+    }
+
+    isMouseBlockingPress() {
+        return true;
+    }
+
+
     recalcPairCode() {
         this.pairCode = JSON.stringify([Math.min(this.nodeA.uuid, this.nodeB.uuid), Math.max(this.nodeA.uuid, this.nodeB.uuid)]);
         return this.pairCode;
@@ -25,25 +34,25 @@ class NodeLink extends VPObject {
 
     onMouseEntered() {
         super.onMouseEntered();
-        this.vp.suggestCursor("pointer");
+        this.suggestCursor("pointer");
     }
 
     onMouseExited() {
         super.onMouseExited();
-        this.vp.unsuggestCursor("pointer");
+        this.unsuggestCursor("pointer");
     }
 
-    onClicked(){
+    onClicked() {
         super.onClicked();
         this.destroyLink();
     }
-    
-    destroyLink(){
+
+    destroyLink() {
         this.vp.forget(this);
         this.vp.links.delete(this);
         this.vp.linkPairCodes.delete(this.pairCode);
         this.nodeA.links.delete(this);
-        if(this.nodeB instanceof IVPNode){
+        if (this.nodeB instanceof IVPNode) {
             this.nodeB.links.delete(this);
         }
         this.vp.onLinkDestroyed(this);

@@ -34,22 +34,23 @@ class RotArrow extends VPObject {
 
     onMouseEntered() {
         super.onMouseEntered();
-        this.vp.suggestCursor("grab");
+        this.suggestCursor("grab");
     }
 
     onMouseExited() {
         super.onMouseExited();
-        this.vp.unsuggestCursor("grab");
+        this.unsuggestCursor("grab");
     }
 
     onDragStarted() {
         super.onDragStarted();
-        this.vp.suggestCursor("grabbing");
+        this.suggestCursor("grabbing");
     };
 
     onDragEnded() {
         super.onDragEnded();
-        this.vp.unsuggestCursor("grabbing");
+        this.unsuggestCursor("grabbing");
+        this.vp.queueRedraw();
     };
 
     onDragged() {
@@ -58,8 +59,8 @@ class RotArrow extends VPObject {
         if (!this.inverted) {
             angle = Math.PI + angle;
         }
-        if (this.vp.ctrlDown) {
-            angle = Math.round(angle / Math.PI * 24) / 24 * Math.PI;
+        if (this.vp.altDown) {
+            angle = Math.round(angle / Math.PI * 8) / 8 * Math.PI;
         }
         this.node.rotation = angle;
         this.recalcEndpoint();
@@ -81,9 +82,13 @@ class RotArrow extends VPObject {
         )
 
         ctx.lineCap = "round";
-        ctx.strokeStyle = this.vp.backgroundColor;
         ctx.lineWidth = 12 * this.vp.zoomFactor;
+        ctx.strokeStyle = this.vp.backgroundColor;
         this.strokeLine(ctx, this.node.position, this.endpoint);
+        
+        if(this.mouseOverlapping || this.dragged){
+            ctx.strokeStyle = "#eeeeee"
+        }
         this.strokeLine(ctx, this.endpoint, tipCW);
         this.strokeLine(ctx, this.endpoint, tipCCW);
 

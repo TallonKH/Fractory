@@ -42,6 +42,9 @@ class IVPNode extends VPObject {
 
     draw(ctx) {
         ctx.fillStyle = this.color;
+        if(this.nodeState == 0 && this.links.size == 0){
+            ctx.fillStyle = "#333";
+        }
         this.fillCircle(ctx);
         if (this.mouseOverlapping) {
             ctx.lineWidth = 2 * this.vp.zoomFactor;
@@ -60,7 +63,7 @@ class IVPNode extends VPObject {
 
     onDragStarted() {
         super.onDragStarted();
-        this.vp.suggestCursor("crosshair");
+        this.suggestCursor("crosshair");
 
         const link = new NodeLink(this, "mouse");
         this.vp.mouseLink = link;
@@ -69,7 +72,7 @@ class IVPNode extends VPObject {
 
     onDragEnded() {
         super.onDragEnded();
-        this.vp.unsuggestCursor("crosshair");
+        this.unsuggestCursor("crosshair");
     };
 
     onMouseUp() {
@@ -79,12 +82,12 @@ class IVPNode extends VPObject {
 
     onMouseEntered() {
         super.onMouseEntered();
-        this.vp.suggestCursor("pointer");
+        this.suggestCursor("pointer");
     }
 
     onMouseExited() {
         super.onMouseExited();
-        this.vp.unsuggestCursor("pointer");
+        this.unsuggestCursor("pointer");
     }
 
     onClicked() {

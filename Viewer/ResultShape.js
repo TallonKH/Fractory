@@ -1,7 +1,7 @@
 class ResultShape extends VPObject {
-    constructor(partEditor, depth = 4, {} = {}) {
-        super(partEditor, {
-            "mouseListening": true,
+    constructor(vp, partEditor, depth = 4, {} = {}) {
+        super(vp, {
+            "mouseListening": false,
             "zOrder": 8
         });
         this.partEditor = partEditor;

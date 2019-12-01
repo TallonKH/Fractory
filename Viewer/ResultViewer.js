@@ -20,7 +20,7 @@ class ResultViewer extends Viewport {
         this.allShapes = [];
 
         for (const partEditor of partEditors) {
-            const shape = new ResultShape(partEditor);
+            const shape = new ResultShape(this, partEditor);
             this.registerObj(shape);
             this.allShapes.push(shape);
         }
