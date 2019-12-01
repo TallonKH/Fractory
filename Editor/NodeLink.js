@@ -9,6 +9,10 @@ class NodeLink extends VPObject {
         this.nodeB = nodeB;
     }
 
+    calcPairCode(){
+        return JSON.stringify([Math.min(this.nodeA.uuid, this.nodeB.uuid), Math.max(this.nodeA.uuid, this.nodeB.uuid)]);
+    }
+
     draw(vp, ctx) {
         let posA = this.nodeA.position;
         let posB;

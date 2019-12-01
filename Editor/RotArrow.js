@@ -3,7 +3,7 @@ const arrowLength = 25;
 class RotArrow extends VPObject {
     constructor(node, inverted, {} = {}) {
         super({
-            "mouseListening": false,
+            "mouseListening": true,
             "zOrder": 8
         });
         this.node = node;
@@ -12,7 +12,16 @@ class RotArrow extends VPObject {
         this.recalcEndpoint();
     }
 
-    recalcEndpoint(){
+    isMouseBlockingOverlap(vp) {
+        return true;
+    }
+
+    isMouseBlockingPress(vp) {
+        return true;
+    }
+
+
+    recalcEndpoint() {
         this.endpoint = this.node.position.add2(
             Math.sin(this.node.rotation) * arrowLength * (this.inverted ? -0.75 : 1),
             Math.cos(this.node.rotation) * arrowLength * (this.inverted ? -0.75 : 1)
@@ -22,6 +31,26 @@ class RotArrow extends VPObject {
     isOverlapping(point) {
         return this.endpoint.subtractp(point).lengthSquared() < Math.pow(this.size, 2);
     }
+
+    onMouseEntered(vp) {
+        super.onMouseEntered(vp);
+        vp.suggestCursor("grab");
+    }
+
+    onMouseExited(vp) {
+        super.onMouseExited(vp);
+        vp.unsuggestCursor("grab");
+    }
+
+    onDragStarted(vp) {
+        super.onDragStarted(vp);
+        vp.suggestCursor("grabbing");
+    };
+
+    onDragEnded(vp) {
+        super.onDragEnded(vp);
+        vp.unsuggestCursor("grabbing");
+    };
 
     draw(vp, ctx) {
         const rotation = this.node.rotation;
@@ -44,7 +73,7 @@ class RotArrow extends VPObject {
         this.strokeLine(vp, ctx, this.endpoint, tipCW);
         this.strokeLine(vp, ctx, this.endpoint, tipCCW);
 
-        ctx.strokeStyle = this.inverted ? IVPNode.nodeStateColors[1]: IVPNode.nodeStateColors[2];
+        ctx.strokeStyle = this.inverted ? IVPNode.nodeStateColors[1] : IVPNode.nodeStateColors[2];
         ctx.lineWidth = 6 * vp.zoomFactor;
         // this.strokeLine(vp, ctx, this.node.position, this.endpoint);
         this.strokeLine(vp, ctx, this.endpoint, tipCW);

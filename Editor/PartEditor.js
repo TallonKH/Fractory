@@ -12,7 +12,7 @@ class PartEditor extends Viewport {
         // this.grabbedObj = null;
         // this.mouseLink = null;
         this.links = new Set();
-        this.linkedNodeIds = new Set();
+        this.linkPairCodes = new Set();
         this.nodes = new Set();
         this.partChangeListeners = new Set();
         this.setupNodes();

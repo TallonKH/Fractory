@@ -16,15 +16,21 @@ class IVPNode extends VPObject {
 
     static globalInit(vp) {
         vp.postMouseUpListeners["IVPU"] = function (vpp) {
-            if (vpp.mouseLink) {
-                console.log("====");
-                console.log(vpp.mouseLink.nodeA);
-                console.log(vpp.linkCandidate);
-                if (vpp.linkCandidate) {
-                    vpp.mouseLink.nodeB = vpp.linkCandidate;
-                    vp.queueRedraw();
+            const candidateLink = vpp.mouseLink;
+            if (candidateLink) {
+                if (vpp.linkCandidate && vpp.linkCandidate != candidateLink.nodeA) {
+                    candidateLink.nodeB = vpp.linkCandidate;
+                    const code = candidateLink.calcPairCode();
+                    if (vpp.linkPairCodes.has(code)){
+                        vpp.forget(candidateLink);
+                    }else{
+                        vpp.linkPairCodes.add(code);
+                        vpp.links.add(candidateLink);
+                        vpp.onLinkMade(candidateLink);
+                        vpp.queueRedraw();
+                    }
                 } else {
-                    vpp.forget(vpp.mouseLink);
+                    vpp.forget(candidateLink);
                 }
             }
             vpp.mouseLink = null;
@@ -62,7 +68,6 @@ class IVPNode extends VPObject {
     onDragEnded(vp) {
         super.onDragEnded(vp);
         vp.unsuggestCursor("crosshair");
-        console.log("asdf")
     };
 
     onMouseUp(vp) {

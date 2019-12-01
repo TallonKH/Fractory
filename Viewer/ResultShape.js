@@ -30,7 +30,12 @@ class ResultShape extends VPObject {
             for (const seg of this.partEditor.links) {
                 let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(srcRot).multiply1(srcScale).addp(srcPos);
                 let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(srcRot).multiply1(srcScale).addp(srcPos);
-                ctx.strokeStyle = "#222222";
+                // let col = "#ffffff";
+                // for (let i = 0; i < depthCounter; i++) {
+                //     col = darkenHex(col, 32);
+                // }
+                // ctx.strokeStyle = col;
+                ctx.strokeStyle = "#eeeeee";
                 ctx.lineWidth = 5 * vp.zoomFactor;
                 this.strokeLine(vp, ctx, posA.multiply1(100), posB.multiply1(100));
             }
