@@ -28,8 +28,8 @@ class ResultShape extends VPObject {
         ctx.lineCap = "round";
         for (const rootNode of this.nodeLists[1]) {
             for (const seg of this.partEditor.links) {
-                let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(srcRot).multiply1(srcScale).addp(srcPos);
-                let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(srcRot).multiply1(srcScale).addp(srcPos);
+                let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
+                let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
                 // let col = "#ffffff";
                 // for (let i = 0; i < depthCounter; i++) {
                 //     col = darkenHex(col, 32);
@@ -40,8 +40,8 @@ class ResultShape extends VPObject {
                 this.strokeLine(vp, ctx, posA.multiply1(100), posB.multiply1(100));
             }
             for (const branchNode of this.nodeLists[2]) {
-                const posR = branchNode.dPosition.subtractp(rootNode.dPosition).rotate(srcRot).multiply1(srcScale).addp(srcPos);
-                this.drawPart(vp, ctx, posR, srcRot + branchNode.rotation, srcScale * branchNode.scale, depthCounter - 1);
+                const posR = branchNode.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
+                this.drawPart(vp, ctx, posR, srcRot + rootNode.rotation - branchNode.rotation, srcScale * branchNode.scale, depthCounter - 1);
             }
         }
     }

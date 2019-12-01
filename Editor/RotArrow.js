@@ -52,6 +52,20 @@ class RotArrow extends VPObject {
         vp.unsuggestCursor("grabbing");
     };
 
+    onDragged(vp) {
+        super.onDragged(vp);
+        let angle = -(vp.mousePos.subtractp(this.node.position).getAngle() + Math.PI / 2);
+        if (!this.inverted) {
+            angle = Math.PI + angle;
+        }
+        if(vp.ctrlDown){
+            angle = Math.round(angle / Math.PI * 8) / 8 * Math.PI;
+        }
+        this.node.rotation = angle;
+        this.recalcEndpoint();
+        vp.onNodeChanged(this.node);
+    };
+
     draw(vp, ctx) {
         const rotation = this.node.rotation;
         const tipLength = arrowLength * 0.5;
