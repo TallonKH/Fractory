@@ -6,6 +6,7 @@ class ResultShape extends VPObject {
         });
         this.partEditor = partEditor;
         this.nodeLists = partEditor.separateNodes();
+        this.maxDepth = 5;
     }
 
     isOverlapping(point) {
@@ -17,7 +18,7 @@ class ResultShape extends VPObject {
     }
 
     draw(ctx) {
-        this.drawPart(ctx, new NPoint(), 0, 1, 5);
+        this.drawPart(ctx, new NPoint(), 0, 1, this.maxDepth);
         // this.drawPart(ctx, this.rootNode, new Set(), new Set(), new NPoint(), 1, 1, 5);
     }
 
@@ -25,23 +26,25 @@ class ResultShape extends VPObject {
         if (depthCounter <= 0) {
             return;
         }
+
         ctx.lineCap = "round";
+        const a = colorLerp("#4dff7c", "#fca63d", depthCounter / this.maxDepth);
+        const b = colorLerp("#3d73fc", "#fc3d60", depthCounter / this.maxDepth);
+        ctx.strokeStyle = colorLerp(a, b, Math.cos(srcRot / 3) / 2 + 0.5);
+        ctx.lineWidth = 1 * this.vp.zoomFactor;
+
         for (const rootNode of this.nodeLists[1]) {
+            const rott = srcRot + rootNode.rotation;
+            const scal = srcScale / rootNode.scale;
             for (const seg of this.partEditor.links) {
-                let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
-                let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
-                // let col = "#ffffff";
-                // for (let i = 0; i < depthCounter; i++) {
-                //     col = darkenHex(col, 32);
-                // }
-                // ctx.strokeStyle = col;
-                ctx.strokeStyle = "#eeeeee";
-                ctx.lineWidth = 5 * this.vp.zoomFactor;
+                let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
+                let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
+
                 this.strokeLine(ctx, posA.multiply1(100), posB.multiply1(100));
             }
             for (const branchNode of this.nodeLists[2]) {
-                const posR = branchNode.dPosition.subtractp(rootNode.dPosition).rotate(srcRot + rootNode.rotation).multiply1(srcScale).addp(srcPos);
-                this.drawPart(ctx, posR, srcRot + rootNode.rotation - branchNode.rotation, srcScale * branchNode.scale, depthCounter - 1);
+                const posR = branchNode.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
+                this.drawPart(ctx, posR, rott - branchNode.rotation, scal * branchNode.scale, depthCounter - 1);
             }
         }
     }

@@ -7,9 +7,9 @@ class IVPNode extends VPObject {
 
         this.dPosition = dPosition;
         this.rotators = [];
-        this.rotation = 0; //Math.PI/8;
+        this.scale = 1;
+        this.rotation = 0;
         this.nodeState = 0;
-        this.scale = 0.5;
         this.links = new Set(); // set of NodeLinks
         this.color = "#888888";
     }
@@ -21,9 +21,9 @@ class IVPNode extends VPObject {
                 if (vpp.linkCandidate && vpp.linkCandidate != candidateLink.nodeA) {
                     candidateLink.nodeB = vpp.linkCandidate;
                     const code = candidateLink.recalcPairCode();
-                    if (vpp.linkPairCodes.has(code)){
+                    if (vpp.linkPairCodes.has(code)) {
                         vpp.forget(candidateLink);
-                    }else{
+                    } else {
                         vpp.linkPairCodes.add(code);
                         vpp.links.add(candidateLink);
                         candidateLink.nodeA.links.add(candidateLink);
@@ -42,7 +42,7 @@ class IVPNode extends VPObject {
 
     draw(ctx) {
         ctx.fillStyle = this.color;
-        if(this.nodeState == 0 && this.links.size == 0){
+        if (this.nodeState == 0 && this.links.size == 0) {
             ctx.fillStyle = "#333";
         }
         this.fillCircle(ctx);
@@ -95,6 +95,12 @@ class IVPNode extends VPObject {
         this.nodeState = (this.nodeState + 1) % IVPNode.nodeStates.length;
         this.color = IVPNode.nodeStateColors[this.nodeState];
 
+        if (this.nodeState == 1) {
+            this.scale = 2;
+        } else if (this.nodeState == 2) {
+            this.scale = 1;
+        }
+
         for (const rotator of this.rotators) {
             this.vp.forget(rotator);
         }
@@ -111,6 +117,7 @@ class IVPNode extends VPObject {
             this.vp.registerObj(rotP);
             this.vp.registerObj(rotN);
         }
+
         this.vp.onNodeChanged(this);
     }
 }
