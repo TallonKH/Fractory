@@ -1,8 +1,9 @@
 Eventually
 + Add recenter button
-+ Add cutting of line segments by clicking on them
 + Add settings panels for individual nodes
 + Add separate "part" sheets
++ Add other grid types (hexagon)
+~ Separate lines & nodes
 
 Immediately
 ? nothing
@@ -10,3 +11,5 @@ Immediately
 Done
 + Rotate node state on click (remember to not allow multiple roots)
 + Add z-depth/click translucency
++ Add cutting of line segments by clicking on them
+~ Bake fractal into list of line endpoints to allow zooming & panning cheaply

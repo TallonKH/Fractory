@@ -7,6 +7,7 @@ class ResultShape extends VPObject {
         this.partEditor = partEditor;
         this.nodeLists = partEditor.separateNodes();
         this.maxDepth = 5;
+        this.lines = [];
     }
 
     isOverlapping(point) {
@@ -17,21 +18,29 @@ class ResultShape extends VPObject {
         return true;
     }
 
-    draw(ctx) {
-        this.drawPart(ctx, new NPoint(), 0, 1, this.maxDepth);
-        // this.drawPart(ctx, this.rootNode, new Set(), new Set(), new NPoint(), 1, 1, 5);
+    recalc() {
+        this.lines = [];
+        this.calcPart(new NPoint(), 0, 1, this.maxDepth);
+        // console.log(currentTimeMillis());
     }
 
-    drawPart(ctx, srcPos, srcRot, srcScale, depthCounter) {
+    draw(ctx) {
+        ctx.lineCap = "round";
+        ctx.lineWidth = 1 * this.vp.zoomFactor;
+        for (const line of this.lines) {
+            ctx.strokeStyle = line.color;
+            this.strokeLine(ctx, line.posA, line.posB);
+        }
+    }
+
+    calcPart(srcPos, srcRot, srcScale, depthCounter) {
         if (depthCounter <= 0) {
             return;
         }
 
-        ctx.lineCap = "round";
         const a = colorLerp("#4dff7c", "#fca63d", depthCounter / this.maxDepth);
         const b = colorLerp("#3d73fc", "#fc3d60", depthCounter / this.maxDepth);
-        ctx.strokeStyle = colorLerp(a, b, Math.cos(srcRot / 3) / 2 + 0.5);
-        ctx.lineWidth = 1 * this.vp.zoomFactor;
+        const color = colorLerp(a, b, Math.cos(srcRot / 3) / 2 + 0.5);
 
         for (const rootNode of this.nodeLists[1]) {
             const rott = srcRot + rootNode.rotation;
@@ -39,12 +48,16 @@ class ResultShape extends VPObject {
             for (const seg of this.partEditor.links) {
                 let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
                 let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
-
-                this.strokeLine(ctx, posA.multiply1(100), posB.multiply1(100));
+                const line = {
+                    "color": color,
+                    "posA": posA.multiply1(100),
+                    "posB": posB.multiply1(100),
+                }
+                this.lines.push(line);
             }
             for (const branchNode of this.nodeLists[2]) {
                 const posR = branchNode.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
-                this.drawPart(ctx, posR, rott - branchNode.rotation, scal * branchNode.scale, depthCounter - 1);
+                this.calcPart(posR, rott - branchNode.rotation, scal * branchNode.scale, depthCounter - 1);
             }
         }
     }
