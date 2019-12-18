@@ -38,17 +38,32 @@ class ResultShape extends VPObject {
             return;
         }
 
-        const a = colorLerp(this.vp.colors[1], this.vp.colors[2], depthCounter / this.maxDepth);
-        const b = colorLerp(this.vp.colors[3], this.vp.colors[4], depthCounter / this.maxDepth);
-        const color = colorLerp(a, b, Math.cos(srcRot / 3) / 2 + 0.5);
-        const width = this.vp.lineWidth(depthCounter / this.maxDepth);
+        const width = this.vp.lineWidthAlg(depthCounter / this.maxDepth);
 
         for (const rootNode of this.nodeLists[1]) {
+
+
             const rott = srcRot + rootNode.rotation;
             const scal = srcScale / rootNode.scale;
+
+            let i=0;
             for (const seg of this.partEditor.links) {
                 let posA = seg.nodeA.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
                 let posB = seg.nodeB.dPosition.subtractp(rootNode.dPosition).rotate(rott).multiply1(scal).addp(srcPos);
+                
+                const color = this.vp.colorAlg({
+                    "depth": depthCounter,
+                    "maxDepth": this.maxDepth,
+                    "index": i++,
+                    "indices": this.partEditor.links.size,
+                    "srcRot": srcRot,
+                    "brnRot": rott,
+                    "srcScale": scal,
+                    "rootPos": srcPos,
+                    "aPos": posA,
+                    "bPos": posB
+                })
+
                 const line = {
                     "color": color,
                     "posA": posA.multiply1(100),
