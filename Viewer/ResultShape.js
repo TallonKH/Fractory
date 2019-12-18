@@ -26,8 +26,8 @@ class ResultShape extends VPObject {
 
     draw(ctx) {
         ctx.lineCap = "round";
-        ctx.lineWidth = 1 * this.vp.zoomFactor;
         for (const line of this.lines) {
+            ctx.lineWidth = line.width * this.vp.zoomFactor;
             ctx.strokeStyle = line.color;
             this.strokeLine(ctx, line.posA, line.posB);
         }
@@ -38,9 +38,10 @@ class ResultShape extends VPObject {
             return;
         }
 
-        const a = colorLerp("#4dff7c", "#fca63d", depthCounter / this.maxDepth);
-        const b = colorLerp("#3d73fc", "#fc3d60", depthCounter / this.maxDepth);
+        const a = colorLerp(this.vp.colors[1], this.vp.colors[2], depthCounter / this.maxDepth);
+        const b = colorLerp(this.vp.colors[3], this.vp.colors[4], depthCounter / this.maxDepth);
         const color = colorLerp(a, b, Math.cos(srcRot / 3) / 2 + 0.5);
+        const width = this.vp.lineWidth(depthCounter / this.maxDepth);
 
         for (const rootNode of this.nodeLists[1]) {
             const rott = srcRot + rootNode.rotation;
@@ -52,6 +53,7 @@ class ResultShape extends VPObject {
                     "color": color,
                     "posA": posA.multiply1(100),
                     "posB": posB.multiply1(100),
+                    "width": width
                 }
                 this.lines.push(line);
             }
