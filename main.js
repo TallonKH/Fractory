@@ -2,7 +2,8 @@ var droot;
 var mainSplit;
 var leftHalf;
 var rightHalf;
-var leftViewport;
+var editor;
+var shape;
 
 const mainSplitterArgs = {
     direction: 'horizontal',
@@ -11,7 +12,6 @@ const mainSplitterArgs = {
 
 $(function () {
     setupElements();
-    // droot.appendChild(viewport.container);
 });
 
 function setupElements() {
@@ -21,18 +21,32 @@ function setupElements() {
     mainSplit = Split(["#leftHalf", "#rightHalf"], mainSplitterArgs);
     mainSplit.gutterSize = 2;
 
-    leftViewport = new PartEditor();
-    leftHalf.appendChild(leftViewport.container);
+    editor = new PartEditor();
+    leftHalf.appendChild(editor.container);
 
-    rightViewport = new ResultViewer();
-    rightHalf.appendChild(rightViewport.container);
-    rightViewport.linkedPartEditors = [leftViewport];
-    leftViewport.partChangeListeners.add(function (e) {
-        rightViewport.recalc();
+    viewer = new ResultViewer();
+    rightHalf.appendChild(viewer.container);
+
+    shape = new ResultShape(viewer, editor, depth = 5);
+    
+    viewer.registerObj(shape);
+    editor.partChangeListeners.add(function (e) {
+        shape.recalcGeometry();
     });
 }
 
-function requestColorPalette(callback, ...statics) {
+document.addEventListener("keydown", function (e) {
+    if (e.which == 32) {
+        editor.colorFunc = getRandColorFunc();
+        editor.widthFunc = getRandWidthFunc();
+        shape.recalcColors();
+        shape.recalcWidths();
+        viewer.queueRedraw();
+    }
+});
+
+/*
+function requestNewPalette(callback, ...statics) {
     statics = statics.slice(0, Math.min(statics.length, 5));
     while (statics.length < 5) {
         statics.push("N");
@@ -43,7 +57,7 @@ function requestColorPalette(callback, ...statics) {
     }
 
     const http = new XMLHttpRequest();
-    http.tmieout = 200;
+    http.timeout = 200;
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
             var palette = JSON.parse(http.responseText).result;
@@ -54,3 +68,4 @@ function requestColorPalette(callback, ...statics) {
     http.open("POST", "http://colormind.io/api/", true);
     http.send(JSON.stringify(data));
 }
+*/
