@@ -17,6 +17,7 @@ class ResultViewer extends Viewport {
         this.colors = ["#fc3d60", "#4dff7c", "#3d73fc", "#fca63d", "#1a1a1a"];
         this.colorAlg = _ => "#ffffff";
         this.lineWidthAlg = _ => 2;
+        // this.blendMode = "source-over";
         this.linkedPartEditors;
     }
 
@@ -29,6 +30,7 @@ class ResultViewer extends Viewport {
 
                     self.colors = colors.map(a => rgbToHex(a[0], a[1], a[2]));
                     self.colorAlg = getRandomColorAlg();
+                    // self.blendMode = randBlendMode();
 
                     const upperWidth = clamp(widthGen(), 0.5, 16);
                     const lowerWidth = clamp(widthGen2(), 0.5, upperWidth);
@@ -79,7 +81,7 @@ function randInfModifierGetter(infSource) {
     const options = [
         inf => Math.abs(Math.atan(Math.log(Math.abs(inf)) || 0)) / tau,
         inf => Math.sign(inf) / 2 + 0.5,
-        inf => Math.round(inf) % 2,
+        inf => Math.abs(Math.round(inf)) % 2,
         inf => Math.abs(Math.cos(inf)),
     ];
     const selection = getRand(options);
@@ -96,7 +98,7 @@ function rand01Getter() {
         nvars => nvars["index"] % 2,
         nvars => Math.cos(nvars["srcRot"]) / 2 + 0.5,
         nvars => Math.cos(nvars["brnRot"]) / 2 + 0.5,
-        nvars => Math.atan(nvars["srcScale"]) / tau,
+        nvars => Math.abs(Math.atan(nvars["srcScale"])) / tau,
         nvars => coordInput(nvars),
     ];
     return getRand(options);
@@ -122,11 +124,32 @@ function getRandomColorAlg() {
             interpL(
                 this.colors[0],
                 this.colors[1],
-                var1(nvars)),
+                var1(nvars)) || this.colors[0],
             interpR(
                 this.colors[2],
                 this.colors[3],
-                var2(nvars)),
-            var3(nvars));
+                var2(nvars)) || this.colors[1],
+            var3(nvars)) || this.colors[2];
     }
 }
+
+// function randBlendMode(){
+//     const options = [
+//         "source-over",
+//         "lighter",
+//         "multiply",
+//         "screen",
+//         "overlay",
+//         "darken",
+//         "lighten",
+//         "color-dodge",
+//         "soft-light",
+//         "difference",
+//         "exclusion",
+//         "hue",
+//         "saturation",
+//         "color",
+//         "luminosity",
+//     ];
+//     return getRand(options);
+// }

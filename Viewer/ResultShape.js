@@ -25,6 +25,7 @@ class ResultShape extends VPObject {
     }
 
     draw(ctx) {
+        // ctx.globalCompositeOperation = this.vp.blendMode;
         ctx.lineCap = "round";
         for (const line of this.lines) {
             ctx.lineWidth = line.width * this.vp.zoomFactor;
