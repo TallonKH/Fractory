@@ -1,13 +1,18 @@
 var droot;
-var mainSplit;
+var horizSplit;
 var leftHalf;
 var rightHalf;
 var editor;
 var shape;
 
-const mainSplitterArgs = {
-    direction: 'horizontal',
+const horizSplitterArgs = {
+    direction: "horizontal",
     gutterSize: 4,
+}
+
+const toolbarSplitterArgs = {
+    direction: "vertical",
+    gutterSize: 2,
 }
 
 $(function () {
@@ -15,11 +20,16 @@ $(function () {
 });
 
 function setupElements() {
-    droot = document.getElementById("mainContainer")
-    leftHalf = document.getElementById("leftHalf")
-    rightHalf = document.getElementById("rightHalf")
-    mainSplit = Split(["#leftHalf", "#rightHalf"], mainSplitterArgs);
-    mainSplit.gutterSize = 2;
+    helpButton.onclick = e => window.open("./Tutorial/Tutorial.html");
+    photoButton.onclick = e => saveCanvas(viewer.canvas, "Fractal");
+    trashButton.onclick = e => editor.clearShape();
+    scrambleButton.onclick = scrambleColors;
+
+    droot = document.getElementById("mainContainer");
+
+    leftHalf = document.getElementById("leftHalf");
+    rightHalf = document.getElementById("rightHalf");
+    horizSplit = Split(["#leftHalf", "#rightHalf"], horizSplitterArgs);
 
     editor = new PartEditor();
     leftHalf.appendChild(editor.container);
@@ -28,7 +38,7 @@ function setupElements() {
     rightHalf.appendChild(viewer.container);
 
     shape = new ResultShape(viewer, editor, depth = 5);
-    
+
     viewer.registerObj(shape);
     editor.partChangeListeners.add(function (e) {
         shape.recalcGeometry();
@@ -37,13 +47,17 @@ function setupElements() {
 
 document.addEventListener("keydown", function (e) {
     if (e.which == 32) {
-        editor.colorFunc = getRandColorFunc();
-        editor.widthFunc = getRandWidthFunc();
-        shape.recalcColors();
-        shape.recalcWidths();
-        viewer.queueRedraw();
+        scrambleColors();
     }
 });
+
+function scrambleColors() {
+    editor.colorFunc = getRandColorFunc();
+    editor.widthFunc = getRandWidthFunc();
+    shape.recalcColors();
+    shape.recalcWidths();
+    viewer.queueRedraw();
+}
 
 /*
 function requestNewPalette(callback, ...statics) {

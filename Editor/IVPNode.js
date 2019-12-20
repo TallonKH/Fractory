@@ -140,5 +140,5 @@ class IVPNode extends VPObject {
     }
 }
 
-IVPNode.nodeStates = ["Plain", "Root", "Branch", "Both"]
-IVPNode.nodeStateColors = ["#888888", "#f33f3f", "#0177e4", "#a517d9"]
+IVPNode.nodeStates = ["Plain", "Root", "Branch"];//, "Both"]
+IVPNode.nodeStateColors = ["#888888", "#f33f3f", "#0177e4"]//, "#a517d9"]

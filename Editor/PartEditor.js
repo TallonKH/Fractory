@@ -15,7 +15,7 @@ class PartEditor extends Viewport {
         this.linkPairCodes = new Set();
         this.nodes = new Set();
         this.partChangeListeners = new Set();
-        
+
         this.setupNodes();
 
         this.colorFunc = getRandColorFunc();
@@ -102,6 +102,14 @@ class PartEditor extends Viewport {
             }
         }
         return result;
+    }
+
+    clearShape() {
+        this.forgetAll()
+        this.links = new Set();
+        this.nodes = new Set();
+        this.setupNodes();
+        this.partChanged();
     }
 
     onNodeChanged(node) {

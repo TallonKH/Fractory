@@ -55,15 +55,6 @@ class RotArrow extends VPObject {
     onDragged() {
         super.onDragged();
 
-        let angle = -(this.vp.mousePos.subtractp(this.node.position).getAngle() + Math.PI / 2);
-        if (!this.inverted) {
-            angle = Math.PI + angle;
-        }
-        if (!this.vp.altDown) {
-            angle = Math.round(angle / Math.PI * 8) / 8 * Math.PI;
-        }
-        this.node.rotation = angle;
-
         if (this.vp.shiftDown) {
             let scal = this.node.position.subtractp(this.vp.mousePos).length();
             this.node.scale = clamp(scal / 25, 0.25, 16);
@@ -74,6 +65,15 @@ class RotArrow extends VPObject {
                     this.node.scale = Math.round(this.node.scale / 2) * 2;
                 }
             }
+        }else{
+            let angle = -(this.vp.mousePos.subtractp(this.node.position).getAngle() + Math.PI / 2);
+            if (!this.inverted) {
+                angle = Math.PI + angle;
+            }
+            if (!this.vp.altDown) {
+                angle = Math.round(angle / Math.PI * 8) / 8 * Math.PI;
+            }
+            this.node.rotation = angle;
         }
 
         this.recalcEndpoint();
