@@ -4,6 +4,12 @@ Eventually
 + Add separate "part" sheets
 + Add other grid types (hexagon)
 ~ Separate lines & nodes
++ Add color palette editor
++ Add color/width function editor
++ Add saving/loading of shapes, palettes, color functions
++ Improve the screenshot button to account for fractal bounds
++ Add save as SVG?
+~ Smart depth/lag management?
 
 Immediately
 ? nothing
