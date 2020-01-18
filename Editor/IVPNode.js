@@ -68,7 +68,7 @@ class IVPNode extends VPObject {
     }
 
     isOverlapping(point) {
-        return this.position.subtractp(point).lengthSquared() < Math.pow(this.size * 3, 2);
+        return this.position.subtractp(point).lengthSquared() < Math.pow(this.size * 2, 2);
     }
 
     onDragStarted() {
