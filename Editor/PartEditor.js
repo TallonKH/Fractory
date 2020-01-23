@@ -45,48 +45,6 @@ class PartEditor extends Viewport {
         // console.log(this.mouseOverObjIdsSorted);
     }
 
-    // onMouseUp() {
-    //     super.onMouseUp();
-
-    //     if (this.grabbedObj) {
-    //         if (this.grabbedObj instanceof IVPNode) {
-    //             const link = this.mouseLink;
-    //             const nodeA = this.grabbedObj;
-
-    //             let linkMade = false;
-    //             for (const obj of this.mouseOverObjs) {
-    //                 if (obj instanceof IVPNode) {
-    //                     if (obj == nodeA) {
-    //                         continue;
-    //                     }
-    //                     const nodeB = obj;
-    //                     const pair = JSON.stringify([Math.min(nodeA.id, nodeB.id), Math.max(nodeA.id, nodeB.id)]);
-    //                     if (!this.linkedNodeIds.has(pair)) {
-    //                         this.linkedNodeIds.add(pair);
-    //                         linkMade = true;
-    //                         link.nodeB = obj;
-    //                         obj.links.add(link);
-    //                         this.grabbedObj.links.add(link);
-    //                         this.links.add(link);
-    //                         this.onLinkMade(link);
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //             if (!linkMade) {
-    //                 this.forget(this.mouseLink);
-    //             }
-    //             this.mouseLink = null;
-    //         } else if (this.grabbedObj instanceof RotArrow){
-    //             console.log(this.grabbedObj)
-    //         }
-    //         this.grabbedObj = null;
-    //     }
-    // }
-    // mousePosUpdated(){
-    //     super.mousePosUpdated();
-    // }
-
     separateNodes() {
         const result = [
             [],

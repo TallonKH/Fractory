@@ -52,6 +52,7 @@ class ResultShape extends VPObject {
         this.calcPartGeometry(new NPoint(), 0, 1, this.maxDepth);
         this.recalcColors();
         this.recalcWidths();
+        this.vp.queueRedraw();
     }
 
     draw(ctx) {
