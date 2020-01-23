@@ -59,7 +59,7 @@ class ResultShape extends VPObject {
         // ctx.globalCompositeOperation = this.vp.blendMode;
         ctx.lineCap = "round";
         for (const line of this.lines) {
-            ctx.lineWidth = line.width * this.vp.zoomFactor;
+            ctx.lineWidth = line.width;// * this.vp.zoomFactor;
             ctx.strokeStyle = line.color;
             this.strokeLine(ctx, line.aPos.multiply1(100), line.bPos.multiply1(100));
         }

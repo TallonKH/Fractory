@@ -17,7 +17,6 @@ class PartEditor extends Viewport {
         this.partChangeListeners = new Set();
 
         this.setupNodes();
-
         this.colorFunc = getRandColorFunc();
         this.widthFunc = getRandWidthFunc();
 
@@ -27,7 +26,7 @@ class PartEditor extends Viewport {
     }
 
     setupNodes() {
-        const radius = 4;
+        const radius = 3;
         for (let ix = -radius; ix <= radius; ix++) {
             for (let iy = -radius; iy <= radius; iy++) {
                 const node = new IVPNode(this, new NPoint(ix, iy));
@@ -35,6 +34,30 @@ class PartEditor extends Viewport {
                 this.nodes.add(node);
                 this.registerObj(node);
             }
+        }
+    }
+
+    randomShape(){
+        this.nodes.forEach(x => x.nodeState = 0);
+
+        const grabbedNodes = randSample(
+            Array.from(this.nodes), 
+            3 + Math.floor(Math.random() * 4));
+        
+        grabbedNodes.forEach(function(node){
+            node.nodeState = 2;
+            node.rotation = Math.random() * Math.PI * 2;
+            node.rotators.forEach(r => r.recalcEndpoint());
+        });
+        grabbedNodes[0].nodeState = 1;
+        grabbedNodes.forEach(node => node.nodeStateChanged());
+
+
+        const linkCount = 1 + Math.floor(Math.random() * 4);
+        const linkNodesA = randSample(Array.from(this.nodes), linkCount);
+        const linkNodesB = randSample(Array.from(this.nodes), linkCount);
+        for(let i=0; i<linkCount; i++){
+            IVPNode.makeLink(this, linkNodesA[i], linkNodesB[i]);
         }
     }
 

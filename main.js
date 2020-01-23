@@ -20,6 +20,7 @@ const toolbarSplitterArgs = {
 
 $(function () {
     setupElements();
+    editor.randomShape();
 });
 
 function setupElements() {
