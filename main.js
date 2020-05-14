@@ -7,6 +7,7 @@ var shape;
 var colorFuncQueue = [];
 var widthFuncQueue = [];
 var shiftDown = false;
+var ctrlDown = false;
 
 const horizSplitterArgs = {
     direction: "horizontal",
@@ -59,17 +60,24 @@ document.addEventListener("keydown", function (e) {
         case 16:
             shiftDown = true;
             break;
+        case 17:
+            ctrlDown = true;
+            break;
         case 32:
-            if (shiftDown) {
-                if (colorFuncQueue.length > 0) {
-                    editor.colorFunc = colorFuncQueue.pop();
-                    editor.widthFunc = widthFuncQueue.pop();
-                    shape.recalcColors();
-                    shape.recalcWidths();
-                    viewer.queueRedraw();
-                }
+            if (ctrlDown) {
+                editor.randomShape();
             } else {
-                scrambleColors();
+                if (shiftDown) {
+                    if (colorFuncQueue.length > 0) {
+                        editor.colorFunc = colorFuncQueue.pop();
+                        editor.widthFunc = widthFuncQueue.pop();
+                        shape.recalcColors();
+                        shape.recalcWidths();
+                        viewer.queueRedraw();
+                    }
+                } else {
+                    scrambleColors();
+                }
             }
             break;
     }
@@ -79,6 +87,9 @@ document.addEventListener("keyup", function (e) {
     switch (e.which) {
         case 16:
             shiftDown = false;
+            break;
+        case 17:
+            ctrlDown = false;
             break;
     }
 });

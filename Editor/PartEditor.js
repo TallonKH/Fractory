@@ -38,7 +38,11 @@ class PartEditor extends Viewport {
     }
 
     randomShape(){
-        this.nodes.forEach(x => x.nodeState = 0);
+        Array.from(this.links).forEach(s => s.destroyLink());
+        this.nodes.forEach(function(node){
+            node.nodeState = 0
+            node.rotation = 0;
+        });
 
         const grabbedNodes = randSample(
             Array.from(this.nodes), 
@@ -50,7 +54,7 @@ class PartEditor extends Viewport {
             node.rotators.forEach(r => r.recalcEndpoint());
         });
         grabbedNodes[0].nodeState = 1;
-        grabbedNodes.forEach(node => node.nodeStateChanged());
+        this.nodes.forEach(node => node.nodeStateChanged());
 
 
         const linkCount = 1 + Math.floor(Math.random() * 4);
